@@ -46,42 +46,36 @@ const existeduser = await User.findOne({
 if(existeduser){
     throw new ApiError(409,"User with email already exists")
 }
-const avatarpath = req.files?.avatar[0]?.path;
+ const avatarLocalPath = req.files?.avatar[0]?.path;
+    //const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
+    let coverImageLocalPath;
+    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverImageLocalPath = req.files.coverImage[0].path
+    }
+    
 
-if(!avatarpath){
-    throw new ApiError(400,"Avatar is required ")
-
-}
-//const coverimagepath = req.files?.coverimage[0]?.path;
-  let coverimagepath;
-    if (req.files && Array.isArray(req.files.coverimage) && req.files.coverimage.length > 0) {
-        coverimagepath = req.files.coverimage[0].path
+    if (!avatarLocalPath) {
+        throw new ApiError(400, "Avatar file is required")
     }
 
+    const avatar = await uploadcloudinary(avatarLocalPath)
+    const coverImage = await uploadcloudinary(coverImageLocalPath)
 
-console.log(avatarpath);
-console.log(coverimagepath);
+    if (!avatar) {
+        throw new ApiError(400, "Avatar file is required")
+    }
+   
 
+    const user = await User.create({
+        fullName,
+        avatar: avatar.url,
+        coverImage: coverImage?.url || "",
+        email, 
+        password,
+        username: username.toLowerCase()
+    })
 
-const avatar = await uploadcloudinary(avatarpath)
-const coverimage= await uploadcloudinary(coverimagepath)
-console.log(avatar);
-console.log(coverimage);
-
-
-// if(!avatar){
-//     throw new ApiError(400,"Avatar required")
-// }
-
-const user= await User.create({
-    email,
-    password,
-    username,
-    fullName,
-    avatar: avatar.url,
-    coverimage:coverimage.url
-})
 const createduser= await User.findById(user._id).select("-password -refreshtoken")
 
 
