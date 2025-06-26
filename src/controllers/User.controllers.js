@@ -4,6 +4,8 @@ import {ApiError} from '../utils/ApiError.js'
 import {User} from '../models/User.models.js'
 import { uploadcloudinary } from '../utils/cloudinary.js' 
 import {ApiResponse} from '../utils/ApiResponse.js'
+import jwt from 'jsonwebtoken'
+import { use } from 'react'
 
 
 const generateaccessandrefreshtoken = async(userId)=>{
@@ -152,6 +154,36 @@ const logoutuser = asyncHandler(async (req,res)=>{
     )
 
 
+
+})
+const refreshaccesstoken = asyncHandler(async(req,res)=>{
+    const incomingrefreshtoken = req.cookies.refreshtoken || req.body.refreshtoken
+    if(!incomingrefreshtoken){
+        throw new ApiError(401,"Invalid access")
+    }
+    const decodedtoken= jwt.verify(incomingrefreshtoken,process.env.REFRESH_TOKEN_SECRET)
+    const user = await User.findById(decodedtoken?._id)
+    if(!user){
+        throw new ApiError(401,"Invalid access")
+    }
+    if(incomingrefreshtoken != user?.refreshtoken){
+        throw new ApiError( 401,"Invalid token")
+    }
+    const {accesstoken,newrefreshtoken}=generateaccessandrefreshtoken(user._id)
+    const options ={
+        httpOnly:true,
+        secure:true
+    }
+    res.status(200).cookie("accesstoken",accesstoken,options)
+    .cookie("refreshtoken",newrefreshtoken,options)
+    .json(new ApiResponse(200,
+
+
+    {
+        user:accesstoken,refreshtoken
+    },"Access and refresh token refreshed"
+    ))
+
 })
 
 
@@ -164,4 +196,4 @@ const logoutuser = asyncHandler(async (req,res)=>{
 
 
 
-export { registerUser,loginuser,logoutuser}
+export { registerUser,loginuser,logoutuser,refreshaccesstoken}
