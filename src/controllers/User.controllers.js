@@ -6,6 +6,7 @@ import { uploadcloudinary } from '../utils/cloudinary.js'
 import {ApiResponse} from '../utils/ApiResponse.js'
 import jwt from 'jsonwebtoken'
 import { use } from 'react'
+import { application } from 'express'
 
 
 const generateaccessandrefreshtoken = async(userId)=>{
@@ -180,10 +181,47 @@ const refreshaccesstoken = asyncHandler(async(req,res)=>{
 
 
     {
-        user:accesstoken,refreshtoken
+        user:accesstoken.refreshtoken
     },"Access and refresh token refreshed"
     ))
 
+})
+const changepassword = asyncHandler(async(req,res)=>{
+    const {oldpassword,newpassword}= req.body
+    if(!oldpassword || !newpassword){
+        throw new ApiError(404,"Password files are required")
+    }
+    const user = await User.findById(req.user?._id)
+    const isPasswordCorrect = await user.isPasswordCorrect(oldpassword)
+    if(!isPasswordCorrect){
+       throw  new ApiError(400,"Wrong password")
+    }
+     user.password = newpassword
+     await user.save({validateBeforeSave:false})
+     return res.status(200)
+     .json(new ApiResponse(200,{},"Password changed successfully"))
+   
+
+})
+const getuser = asyncHandler(async(req,res)=>{
+    return res.status(200)
+    .json(new ApiResponse(200,req.user,"user details fetched successfully"))
+})
+const updateaccountdetails= asyncHandler(async(req,res)=>{
+    const{fullName,email}=req.body
+    if(!(fullName&&email)){
+        throw new ApiError(401,"Fields are missing")
+    }
+    
+    if(!user){
+        throw new ApiError(404,"User not found")
+    }
+    const user = await User.findByIdAndUpdate(req.user._id,{
+        $set:{fullName,
+            email
+        }
+    },{new:true}).select("-password")
+    return res.status(200).json(new ApiResponse(200,user,"Account details updated"))
 })
 
 
@@ -196,4 +234,6 @@ const refreshaccesstoken = asyncHandler(async(req,res)=>{
 
 
 
-export { registerUser,loginuser,logoutuser,refreshaccesstoken}
+export { registerUser,loginuser,logoutuser,refreshaccesstoken
+    ,changepassword,getuser,updateaccountdetails
+}
