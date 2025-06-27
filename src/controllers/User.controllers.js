@@ -224,7 +224,36 @@ const updateaccountdetails= asyncHandler(async(req,res)=>{
     return res.status(200).json(new ApiResponse(200,user,"Account details updated"))
 })
 
+const updateavatar = asyncHandler((req,res)=>{
+   const  avatarpath = req.file?.path
+    if(!avatarpath){
+        throw new ApiError(401,"Avatar is required")
+    }
+    const avatar = uploadcloudinary(avatarpath)
+    if(!avatar.url){
+        throw new ApiError(400,"Error uploading file on cloudinary")
+    }
+    const user = User.findByIdAndUpdate(req.user._id,{
+        $set:{avatar:avatar.url}
+    },{new:true}).select("-password -refreshtoken")
+    res.status(200).json(new ApiResponse(200,user,"Avatar updated successfully"))
 
+})
+const updatecoverimage = asyncHandler((req,res)=>{
+   const  coverimagepath = req.file?.path
+    if(!coverimagepath){
+        throw new ApiError(401,"Cover image is required")
+    }
+    const coverimage = uploadcloudinary(coverimagepath)
+    if(!coverimage.url){
+        throw new ApiError(400,"Error uploading file on cloudinary")
+    }
+    const user = User.findByIdAndUpdate(req.user._id,{
+        $set:{coverimage:coverimage.url}
+    },{new:true}).select("-password -refreshtoken")
+    res.status(200).json(new ApiResponse(200,user,"Coverimage updated successfully"))
+
+})
 
 
 
@@ -235,5 +264,6 @@ const updateaccountdetails= asyncHandler(async(req,res)=>{
 
 
 export { registerUser,loginuser,logoutuser,refreshaccesstoken
-    ,changepassword,getuser,updateaccountdetails
+    ,changepassword,getuser,updateaccountdetails,
+    updateavatar,updatecoverimage
 }
