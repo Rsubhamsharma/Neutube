@@ -7,8 +7,15 @@ const tweetSchema = new Schema({
         ref:"User"
     },
     content:{
+        title:{
         type:String,
         required:true
+        },
+        description:{
+        type:String,
+        required:true
+
+        }
 
     }
 },{timestamps:true})

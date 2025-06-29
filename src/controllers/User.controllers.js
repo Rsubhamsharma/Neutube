@@ -187,6 +187,11 @@ const refreshaccesstoken = asyncHandler(async(req,res)=>{
     ))
 
 })
+// Read operation
+const getuser = asyncHandler(async(req,res)=>{
+    return res.status(200)
+    .json(new ApiResponse(200,req.user,"user details fetched successfully"))
+})
 const changepassword = asyncHandler(async(req,res)=>{
     const {oldpassword,newpassword}= req.body
     if(!oldpassword || !newpassword){
@@ -201,13 +206,10 @@ const changepassword = asyncHandler(async(req,res)=>{
      await user.save({validateBeforeSave:false})
      return res.status(200)
      .json(new ApiResponse(200,{},"Password changed successfully"))
-   
-
-})
-const getuser = asyncHandler(async(req,res)=>{
-    return res.status(200)
-    .json(new ApiResponse(200,req.user,"user details fetched successfully"))
-})
+     
+     
+    })
+//update operations
 const updateaccountdetails= asyncHandler(async(req,res)=>{
     const{fullName,email}=req.body
     if(!(fullName&&email)){
