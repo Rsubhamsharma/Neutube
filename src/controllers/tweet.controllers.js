@@ -36,7 +36,13 @@ const getTweet = asyncHandler(async(req,res)=>{
     }
     return res.status(200).json(new ApiResponse(200,tweet,"Tweet fetched successfully"))
 })
-
+// Read all  tweets
+const  getallTweets = asyncHandler(async(req,res)=>{
+    const {userId}= req.params
+    
+    const tweets = await Tweet.find({owner:userId}).sort({createdAt:-1})
+    return res.status(200).json(new ApiResponse(200,tweets,"All tweets fetched successfully"))
+})
 //update tweet
 const updateTweet = asyncHandler(async(req,res)=>{
     const {title,description}= req.body
@@ -67,4 +73,4 @@ const deleteTweet = asyncHandler(async(req,res)=>{
 
 
     })
-export {postTweet,getTweet,updateTweet,deleteTweet}
+export {postTweet,getTweet,updateTweet,deleteTweet,getallTweets}
