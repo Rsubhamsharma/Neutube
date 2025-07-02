@@ -69,7 +69,7 @@ userSchema.methods.generateAccessToken = async function (){ // this method is us
     // this method is called on the user instance, so we can access the user properties using `this`.
     // the token is returned as a string.
     return jwt.sign({
-        id:this._id,
+        _id:this._id,
         username:this.username,
         email:this.email
     },
@@ -81,7 +81,7 @@ userSchema.methods.generateAccessToken = async function (){ // this method is us
 
     userSchema.methods.generateRefreshToken = async function (){
     return jwt.sign({
-        id:this._id,
+        _id:this._id,
         
     },
     process.env.REFRESH_TOKEN_SECRET,{

@@ -263,7 +263,7 @@ const getuserprofile = asyncHandler(async(req,res)=>{
         throw new ApiError(400,"Username is required")
     }
     const user = await User.aggregate([
-        {$match:{usernameL:username.toLowerCase()}},
+        {$match:{username:username.toLowerCase()}},
         {$lookup:{
             from:"subscriptions",
             localField:"_id",
