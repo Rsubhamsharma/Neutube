@@ -31,7 +31,7 @@ const getcomment = asyncHandler(async(req,res)=>{
 
     const comments = await Comment.find({video:videoId})
     if(!comments||comments.length===0){
-        throw new ApiError(400,"No comment available")
+        return res.status(200).json(new ApiResponse(200,{},"No comment available"))
     }
     return res.status(200).json(new ApiResponse(200,comments,"Comments fetched successfully"))
 
