@@ -56,4 +56,26 @@ import {Playlist} from '../models/playlist.models.js'
     }
     return res.status(200).json(new ApiResponse(200,add,"Video added successfully"))
  })
- export {createPlaylist,getUserPlaylists,getPlaylistById,addVideoInPlaylist}
+ // remove video from playlists
+ const removeVideoInPlaylist = asyncHandler(async(req,res)=>{
+    const {videoId,playlistId}=req.params
+    const remove = await Playlist.findByIdAndUpdate(playlistId,{$pull:{videos:videoId}},{new:true}).populate("videos","thumbnail","duration","videofile","title","owner")
+    if(!remove){
+        throw new ApiError(500,"Something went wrong")
+    }
+    return res.status(200).json(new ApiResponse(200,remove,"Video removed successfully"))
+})
+//update playlist
+const updatePlaylist = asyncHandler(async(req,res)=>{
+    const{playlistId}=req.params
+    const{name,description}=req.body
+    if(!name||!description){
+        throw new ApiError(400,"Name and description required")
+    }
+    const update = await Playlist.findByIdAndUpdate(playlistId,{
+        name,
+        description
+    },{new:true})
+    return res.status(200).json(new ApiResponse(200,update,"Playlist updated successfully"))
+})
+ export {createPlaylist,getUserPlaylists,getPlaylistById,addVideoInPlaylist,removeVideoInPlaylist,updatePlaylist}
