@@ -22,6 +22,7 @@ import commentrouter from './routes/comment.routes.js'
 import likerouter from './routes/like.routes.js'
 import playlistrouter from './routes/playlist.routes.js'
 import videorouter from './routes/video.routes.js'
+import subscriptionrouter from './routes/subscription.routes.js'
 
 
 app.use("/api/v1/users",userrouter)
@@ -30,6 +31,7 @@ app.use("/api/v1/comment",commentrouter)
 app.use("/api/v1/like",likerouter)
 app.use("/api/v1/playlist",playlistrouter)
 app.use("/api/v1/video",videorouter)
+app.use("/api/v1/subscription",subscriptionrouter)
 
 
 export default app;

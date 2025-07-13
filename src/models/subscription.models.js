@@ -9,7 +9,13 @@ const subscriptionschema = new mongoose.Schema({
     channel:{
          type: mongoose.Schema.Types.ObjectId,
         ref: "User"   
+    },
+    isSubscribed:{
+        type:Boolean,
+        default:false
+
     }
+
 },{timestamps:true})
 
 export const Subcription = mongoose.model("Subscription",subscriptionschema)
