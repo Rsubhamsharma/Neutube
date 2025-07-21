@@ -18,7 +18,10 @@ export {asyncHandler};
     //         next(error);
     //     }
 // }
-// This function takes an async function as an argument and returns a new function that handles any errors that occur during the execution of the async function. If an error occurs, it will be passed to the next middleware in the Express stack, allowing for centralized error handling. 
+// This function takes an async function as an argument and returns a new function 
+// that handles any errors that occur during the execution of the async function. 
+// If an error occurs, it will be passed to the next middleware in the Express stack, 
+// allowing for centralized error handling. 
 // This is useful in Express applications to avoid repetitive try-catch blocks in route handlers.
 // Usage example:
 // const express = require('express');
@@ -29,7 +32,8 @@ export {asyncHandler};
 //     const data = await someAsyncOperation();     
 //     res.json(data);
 // }));
-// this file can be writen in this way also but it is not recommended to use this way because it is not a good practice to use try and catch block in every route handler
+// this file can be writen in this way also but it is not recommended to use this way
+//  because it is not a good practice to use try and catch block in every route handler
 //// const asyncHandler = (fn) => async (req, res, next) => {
     //     try {
         //         await fn(req, res, next)
