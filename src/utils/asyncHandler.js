@@ -1,4 +1,5 @@
-//This file is used to handle async errors in Express routes whenever we use async and await We mostly use this in our react app and while talking with the database.
+//This file is used to handle async errors in Express routes whenever we use async and 
+// await We mostly use this in our react app and while talking with the database.
 const asyncHandler = (fn)=>(req,res,next)=>{
     Promise.resolve(fn(req,res,next))
     .catch(next);
